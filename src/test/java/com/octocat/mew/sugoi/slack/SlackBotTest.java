@@ -1,30 +1,35 @@
 package com.octocat.mew.sugoi.slack;
 
-import me.ramswaroop.jbot.core.slack.Bot;
-import me.ramswaroop.jbot.core.slack.Controller;
-import me.ramswaroop.jbot.core.slack.SlackService;
-import me.ramswaroop.jbot.core.slack.models.Event;
-import me.ramswaroop.jbot.core.slack.models.User;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.rule.OutputCapture;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.rule.OutputCapture;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
+import me.ramswaroop.jbot.core.slack.Bot;
+import me.ramswaroop.jbot.core.slack.Controller;
+import me.ramswaroop.jbot.core.slack.EventType;
+import me.ramswaroop.jbot.core.slack.SlackService;
+import me.ramswaroop.jbot.core.slack.models.Event;
+import me.ramswaroop.jbot.core.slack.models.User;
+
+@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class SlackBotTest {
+    
     @Mock
     private WebSocketSession session;
 
@@ -47,6 +52,18 @@ public class SlackBotTest {
         when(slackService.getWebSocketUrl()).thenReturn("");
     }
 
+    @Test
+    public void grabBugTicketTest() throws Exception {
+        TextMessage textMessage = new TextMessage("{\"type\": \"message\"," +
+                "\"ts\": \"1358878749.000002\"," +
+                "\"channel\": \"A1E78BACV\"," +
+                "\"user\": \"U023BECGF\"," +
+                "\"text\": \"(bug) 101\"}");
+        bot.handleTextMessage(session, textMessage);
+        assertThat(capture.toString(), is("(bug) 101\n"));
+    }
+    
+    
     public static class TestBot extends Bot {
         @Override public String getSlackToken() {
             return "slackToken";
@@ -60,11 +77,14 @@ public class SlackBotTest {
         public void grabBugTicket(WebSocketSession session, Event event, Matcher matcher){
             System.out.println(matcher.group(0));
         }
+        
+        @Controller(events = EventType.MESSAGE, pattern = "^([a-z ]{2})(\\d+)([a-z ]{2})$")
+        public void onReceiveMessage(WebSocketSession session, Event event, Matcher matcher) {
+            System.out.println("First group: " + matcher.group(0) + "\n" +
+                    "Second group: " + matcher.group(1) + "\n" +
+                    "Third group: " + matcher.group(2) + "\n" +
+                    "Fourth group: " + matcher.group(3));
+        }
     }
 
-    @Test
-    public void grabBugTicketTest() throws Exception {
-        bot.handleTextMessage(session, new TextMessage());
-        assertThat(capture.toString(), containsString("sdfsdf"));
-    }
 }

@@ -162,6 +162,6 @@ public class SlackBot extends Bot {
 
     @Controller(pattern = "^\\(bug\\) [0-9]*$", next = "askBugTicket")
     public void grabBugTicket(WebSocketSession session, Event event, Matcher matcher){
-        System.out.println(matcher.group(0));
+        reply(session, event, new Message(String.format("speeda-issuetracker.uzabase.com/redmine/issues/%s", matcher.group(0).split(" ")[1])));
     }
 }
