@@ -159,4 +159,9 @@ public class SlackBot extends Bot {
         }
         stopConversation(event);    // stop conversation
     }
+
+    @Controller(pattern = "^\\(bug\\) [0-9]*$", next = "askBugTicket")
+    public void grabBugTicket(WebSocketSession session, Event event, Matcher matcher){
+        System.out.println(matcher.group(0));
+    }
 }
