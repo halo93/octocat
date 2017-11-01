@@ -1,17 +1,22 @@
 package com.octocat.mew.sugoi.slack;
 
+import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketSession;
+
+import com.octocat.mew.sugoi.slack.repository.RedmineBugTicketApplication;
+
+import lombok.Getter;
 import me.ramswaroop.jbot.core.slack.Bot;
 import me.ramswaroop.jbot.core.slack.Controller;
 import me.ramswaroop.jbot.core.slack.EventType;
 import me.ramswaroop.jbot.core.slack.models.Event;
 import me.ramswaroop.jbot.core.slack.models.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketSession;
-
-import java.util.regex.Matcher;
 
 /**
  * A Slack Bot sample. You can create multiple bots by just
@@ -30,13 +35,12 @@ public class SlackBot extends Bot {
      * next <a href="https://my.slack.com/services/new/bot">creating a new bot</a>.
      */
     @Value("${slackBotToken}")
+    @Getter
     private String slackToken;
-
-    @Override
-    public String getSlackToken() {
-        return slackToken;
-    }
-
+    
+    @Autowired 
+    private RedmineBugTicketApplication redmineBugTicketApplication;
+    
     @Override
     public Bot getSlackBot() {
         return this;
@@ -53,7 +57,7 @@ public class SlackBot extends Bot {
      */
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE})
     public void onReceiveDM(WebSocketSession session, Event event) {
-        reply(session, event, new Message("Hi, I am " + slackService.getCurrentUser().getName()));
+        reply(session, event, new Message(String.format("Hi, I am %s, and I am your super assistant.", slackService.getCurrentUser().getName())));
     }
 
     /**
@@ -160,8 +164,10 @@ public class SlackBot extends Bot {
         stopConversation(event);    // stop conversation
     }
 
-    @Controller(pattern = "^\\(bug\\) [0-9]*$", next = "askBugTicket")
-    public void grabBugTicket(WebSocketSession session, Event event, Matcher matcher){
-        reply(session, event, new Message(String.format("speeda-issuetracker.uzabase.com/redmine/issues/%s", matcher.group(0).split(" ")[1])));
+    @Controller(pattern = "(?i)(bug[0-9\\s]*)", next = "askBugTicket")
+    public void grabBugTicket(WebSocketSession session, Event event, Matcher matcher) {
+        redmineBugTicketApplication
+            .grabBugTicket(matcher)
+            .forEach(message -> reply(session, event, message));
     }
 }
