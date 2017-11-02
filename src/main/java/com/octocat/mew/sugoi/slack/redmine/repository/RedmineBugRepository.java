@@ -1,4 +1,4 @@
-package com.octocat.mew.sugoi.slack.repository;
+package com.octocat.mew.sugoi.slack.redmine.repository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,14 +6,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import com.octocat.mew.sugoi.slack.redmine.domain.ticket.BugTicket;
+
 @Repository
 public class RedmineBugRepository {
 
-    public List<String> fetchBugTicket(String... bugNumber) {
+    public List<String> fetchBugTickets(String... bugNumber) {
         return Arrays
             .asList(bugNumber)
             .stream()
-            .map(e -> String.format("speeda-issuetracker.uzabase.com/redmine/issues/%s", e))
+            .map(e -> new BugTicket(e).getUrl())
             .collect(Collectors.toList());
     }
 }
