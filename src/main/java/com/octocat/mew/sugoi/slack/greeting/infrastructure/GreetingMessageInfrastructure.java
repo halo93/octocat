@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GreetingMessageInfrastructure {
+    
     @Autowired
     private GreetingMessages greetingMessages;
     
