@@ -13,7 +13,7 @@ public class BugTicketArgumentResolution implements BotEntryPointArgumentResolut
 
     @Override
     public String[] resolve() {
-        return matcher.group(0).replaceAll("(?i)bug", "").trim().split(" +");
+        return matcher.group(0).replaceAll("(?i).*bug[^0-9]*", "").trim().split(" +");
     }
     
 }

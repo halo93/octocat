@@ -109,6 +109,6 @@ public class OctocatBot extends Bot {
     
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(who are you)")
     public void greetingHi(WebSocketSession session, Event event) {
-        reply(session, event, greetingApplication.greeting(slackService.getCurrentUser().getName()));
+        greeting(session, event);
     }
 }
