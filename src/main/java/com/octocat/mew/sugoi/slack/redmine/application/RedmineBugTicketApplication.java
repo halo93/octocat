@@ -22,7 +22,7 @@ public class RedmineBugTicketApplication {
         return redmineBugRepository
                 .fetchBugTickets(new BugTicketArgumentResolution(matcher).resolve())
                 .stream()
-                .map(e -> "Here's you are: " + e)
+                .map(e -> "Here's you are:\n>" + e)
                 .map(Message::new)
                 .collect(Collectors.toList());
     }

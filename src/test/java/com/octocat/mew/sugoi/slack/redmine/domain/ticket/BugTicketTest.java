@@ -18,6 +18,6 @@ public class BugTicketTest {
     
     @Test
     public void testGetUrl() throws Exception {
-        assertThat(bugticket.getUrl(), is("http://speeda-issuetracker.uzabase.com/redmine/issues/2345"));
+        assertThat(bugticket.url(), is("http://speeda-issuetracker.uzabase.com/redmine/issues/2345"));
     }
 }

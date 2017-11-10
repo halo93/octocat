@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.octocat.mew.sugoi.slack.domain.SlackTrivialMessage;
 import com.octocat.mew.sugoi.slack.greeting.repository.GreetingMessageRepository;
 
 import mockit.Expectations;
@@ -25,7 +26,7 @@ public class GreetingApplicationTest {
             repository.greeting("Octocat"); result = "Hello Octocat";
         }};
         
-        assertThat(application.greeting("Octocat").getText(), is("Hello Octocat"));
+        assertThat(application.greeting("Octocat"), is(new SlackTrivialMessage("Hello Octocat")));
     }
     
     @Test
@@ -34,6 +35,6 @@ public class GreetingApplicationTest {
             repository.thank(); result = "Say it with your mom with gratitude";
         }};
         
-        assertThat(application.thank().getText(), is("Say it with your mom with gratitude"));
+        assertThat(application.thank(), is(new SlackTrivialMessage("Say it with your mom with gratitude")));
     }
 }

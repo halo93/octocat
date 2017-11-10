@@ -3,9 +3,9 @@ package com.octocat.mew.sugoi.slack.greeting.application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.octocat.mew.sugoi.slack.domain.SlackMessage;
+import com.octocat.mew.sugoi.slack.domain.SlackTrivialMessage;
 import com.octocat.mew.sugoi.slack.greeting.repository.GreetingMessageRepository;
-
-import me.ramswaroop.jbot.core.slack.models.Message;
 
 @Controller
 public class GreetingApplication {
@@ -13,11 +13,11 @@ public class GreetingApplication {
     @Autowired
     private GreetingMessageRepository repository;
     
-    public Message greeting(String username) {
-        return new Message(repository.greeting(username));
+    public SlackMessage greeting(String username) {
+        return new SlackTrivialMessage(repository.greeting(username));
     }
     
-    public Message thank() {
-        return new Message(repository.thank());
+    public SlackMessage thank() {
+        return new SlackTrivialMessage(repository.thank());
     }
 }

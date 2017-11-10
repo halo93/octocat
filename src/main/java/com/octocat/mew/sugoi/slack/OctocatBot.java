@@ -1,5 +1,6 @@
 package com.octocat.mew.sugoi.slack;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.octocat.mew.sugoi.slack.domain.SlackMessage;
 import com.octocat.mew.sugoi.slack.greeting.application.GreetingApplication;
 import com.octocat.mew.sugoi.slack.redmine.application.RedmineBugTicketApplication;
 
@@ -85,7 +87,7 @@ public class OctocatBot extends Bot {
     
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(bug[0-9\\s]*)")
     public void grabBugTicketDM(WebSocketSession session, Event event, Matcher matcher) {
-        redmineBugTicketApplication.grabBugTicket(matcher).forEach(message -> reply(session, event, message));
+        grabBugTicket(session, event, matcher);
     }
     
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(thank)")
@@ -111,4 +113,14 @@ public class OctocatBot extends Bot {
     public void greetingHi(WebSocketSession session, Event event) {
         greeting(session, event);
     }
+    
+    public final void reply(WebSocketSession session, Event event, SlackMessage reply) {
+        try {
+            session.sendMessage(reply.toSendableMessage(event.getChannelId()));
+        } catch (IOException e) {
+            // Nothing to do but print the error
+            e.printStackTrace();
+        }
+    }
+    
 }

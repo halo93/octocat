@@ -15,7 +15,7 @@ public class RedmineBugRepository {
         return Arrays
             .asList(bugNumber)
             .stream()
-            .map(e -> new BugTicket(e).getUrl())
+            .map(e -> new BugTicket(e).url())
             .collect(Collectors.toList());
     }
 }

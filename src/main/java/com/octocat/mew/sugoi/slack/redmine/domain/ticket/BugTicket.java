@@ -8,7 +8,7 @@ public class BugTicket {
     private static final String REDMINE_DOMAIN_URL = "http://speeda-issuetracker.uzabase.com/redmine/issues";
     private String ticketNumber;
     
-    public String getUrl() {
+    public String url() {
         return String.format("%s/%s", REDMINE_DOMAIN_URL, ticketNumber);
     }
 }
