@@ -11,11 +11,11 @@ import com.octocat.mew.sugoi.slack.redmine.domain.ticket.BugTicket;
 @Repository
 public class RedmineBugRepository {
 
-    public List<String> fetchBugTickets(String... bugNumber) {
+    public List<BugTicket> fetchBugTickets(String... bugNumber) {
         return Arrays
             .asList(bugNumber)
             .stream()
-            .map(e -> new BugTicket(e).url())
+            .map(e -> new BugTicket(e))
             .collect(Collectors.toList());
     }
 }

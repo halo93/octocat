@@ -13,11 +13,11 @@ public class GreetingApplication {
     @Autowired
     private GreetingMessageRepository repository;
     
-    public SlackMessage greeting(String username) {
-        return new SlackTrivialMessage(repository.greeting(username));
+    public SlackMessage greeting(String username, String channelId) {
+        return new SlackTrivialMessage(repository.greeting(username), channelId);
     }
     
-    public SlackMessage thank() {
-        return new SlackTrivialMessage(repository.thank());
+    public SlackMessage thank(String channelId) {
+        return new SlackTrivialMessage(repository.thank(), channelId);
     }
 }

@@ -5,5 +5,5 @@ import org.springframework.web.socket.TextMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface SlackMessage {
-    TextMessage toSendableMessage(String channelId) throws JsonProcessingException;
+    TextMessage toSendableMessage() throws JsonProcessingException;
 }

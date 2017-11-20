@@ -80,9 +80,7 @@ public class OctocatBot extends Bot {
 
     @Controller(pattern = "(?i)(bug[0-9\\s]*)")
     public void grabBugTicket(WebSocketSession session, Event event, Matcher matcher) {
-        redmineBugTicketApplication
-            .grabBugTicket(matcher)
-            .forEach(message -> reply(session, event, message));
+        reply(session, event, redmineBugTicketApplication.grabBugTicket(matcher));
     }
     
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(bug[0-9\\s]*)")
@@ -92,7 +90,7 @@ public class OctocatBot extends Bot {
     
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(thank)")
     public void greetingtDM(WebSocketSession session, Event event) {
-        reply(session, event, greetingApplication.thank());
+        reply(session, event, greetingApplication.thank(event.getChannelId()));
     }
     
     /**
@@ -106,17 +104,27 @@ public class OctocatBot extends Bot {
      */
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(hello)")
     public void greeting(WebSocketSession session, Event event) {
-        reply(session, event, greetingApplication.greeting(slackService.getCurrentUser().getName()));
+        reply(session, event, greetingApplication.greeting(slackService.getCurrentUser().getName(), event.getChannelId()));
     }
     
     @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(who are you)")
+    public void greetingWhenAsking(WebSocketSession session, Event event) {
+        greeting(session, event);
+    }
+    
+    @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(^hi )")
     public void greetingHi(WebSocketSession session, Event event) {
+        greeting(session, event);
+    }
+    
+    @Controller(events = {EventType.DIRECT_MENTION, EventType.DIRECT_MESSAGE}, pattern="(?i)(^hi$)")
+    public void greetingJustHi(WebSocketSession session, Event event) {
         greeting(session, event);
     }
     
     public final void reply(WebSocketSession session, Event event, SlackMessage reply) {
         try {
-            session.sendMessage(reply.toSendableMessage(event.getChannelId()));
+            session.sendMessage(reply.toSendableMessage());
         } catch (IOException e) {
             // Nothing to do but print the error
             e.printStackTrace();

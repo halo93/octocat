@@ -26,7 +26,7 @@ public class GreetingApplicationTest {
             repository.greeting("Octocat"); result = "Hello Octocat";
         }};
         
-        assertThat(application.greeting("Octocat"), is(new SlackTrivialMessage("Hello Octocat")));
+        assertThat(application.greeting("Octocat", "hung_channel"), is(new SlackTrivialMessage("Hello Octocat", "hung_channel")));
     }
     
     @Test
@@ -35,6 +35,6 @@ public class GreetingApplicationTest {
             repository.thank(); result = "Say it with your mom with gratitude";
         }};
         
-        assertThat(application.thank(), is(new SlackTrivialMessage("Say it with your mom with gratitude")));
+        assertThat(application.thank("hung_channel"), is(new SlackTrivialMessage("Say it with your mom with gratitude", "hung_channel")));
     }
 }

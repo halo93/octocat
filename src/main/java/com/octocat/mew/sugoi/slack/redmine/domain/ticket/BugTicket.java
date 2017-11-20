@@ -11,4 +11,8 @@ public class BugTicket {
     public String url() {
         return String.format("%s/%s", REDMINE_DOMAIN_URL, ticketNumber);
     }
+    
+    public String ticketNumber() {
+        return this.ticketNumber;
+    }
 }
